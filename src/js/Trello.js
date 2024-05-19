@@ -70,47 +70,56 @@ export default class Trello {
     });
   }
 
-  dargNdrop() {
+  addEventsListCardsItems(list) {
     let draggedItem = null;
     const listCards = document.querySelectorAll(".cards");
+
+    list.forEach((item) => {
+      item.setAttribute("draggable", "true");
+
+      item.addEventListener("dragstart", () => {
+        draggedItem = item;
+        setTimeout(() => {
+          item.style.display = "none";
+        }, 0);
+      });
+
+      item.addEventListener("dragend", () => {
+        setTimeout(() => {
+          item.style.display = "block";
+          draggedItem = null;
+        }, 0);
+      });
+
+      listCards.forEach((card) => {
+        this.addEventsCard(card, draggedItem);
+      });
+    });
+  }
+
+  addEventsCard(card, draggedItem) {
+    card.addEventListener("dragover", (e) => {
+      e.preventDefault();
+    });
+
+    card.addEventListener("dragenter", function () {
+      this.style.backgroundColor = "blue";
+    });
+
+    card.addEventListener("dragleave", function () {
+      this.style.backgroundColor = "transparent";
+    });
+
+    card.addEventListener("drop", function () {
+      this.style.backgroundColor = "transparent";
+      this.append(draggedItem);
+    });
+  }
+
+  dargNdrop() {
     const listCardsItems = this.container.querySelectorAll(".cards-item");
     if (listCardsItems.length > 0) {
-      listCardsItems.forEach((item) => {
-        // item.setAttribute("draggable", "true");
-
-        item.addEventListener("dragstart", () => {
-          draggedItem = item;
-          setTimeout(() => {
-            item.style.display = "none";
-          }, 0);
-        });
-
-        item.addEventListener("dragend", () => {
-          setTimeout(() => {
-            item.style.display = "block";
-            draggedItem = null;
-          }, 0);
-        });
-
-        listCards.forEach((card) => {
-          card.addEventListener("dragover", (e) => {
-            e.preventDefault();
-          });
-
-          card.addEventListener("dragenter", function () {
-            this.style.backgroundColor = "blue";
-          });
-
-          card.addEventListener("dragleave", function () {
-            this.style.backgroundColor = "transparent";
-          });
-
-          card.addEventListener("drop", function () {
-            this.style.backgroundColor = "transparent";
-            this.append(draggedItem);
-          });
-        });
-      });
+      this.addEventsListCardsItems(listCardsItems);
     }
   }
 
