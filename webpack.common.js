@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 
 module.exports = {
   target: 'web',
@@ -41,10 +42,14 @@ module.exports = {
     new HtmlWebPackPlugin({
       template: './src/index.html',
       filename: './index.html',
+      inject: 'body', // Добавляет скрипты в конец <body>
     }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css',
+    }),
+    new ScriptExtHtmlWebpackPlugin({  // Добавляет в скрипты defer чтоб выполнялись после загрузки DOM
+      defaultAttribute: 'defer',
     }),
   ],
 };

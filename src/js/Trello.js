@@ -64,7 +64,6 @@ export default class Trello {
         localStorage.setItem(title, JSON.stringify(cards));
       });
     });
-
     window.addEventListener("DOMContentLoaded", () => {
       this.dargNdrop();
       // this.dnd();
@@ -77,7 +76,7 @@ export default class Trello {
     const listCardsItems = this.container.querySelectorAll(".cards-item");
     if (listCardsItems.length > 0) {
       listCardsItems.forEach((item) => {
-        item.setAttribute("draggable", "true");
+        // item.setAttribute("draggable", "true");
 
         item.addEventListener("dragstart", () => {
           draggedItem = item;
@@ -202,6 +201,7 @@ export default class Trello {
     const newCardItem = document.createElement("li");
     newCardItem.classList.add("cards-item");
     newCardItem.textContent = inputValue;
+    newCardItem.setAttribute("draggable", "true");
 
     // Создаем кнопку <button>
     const closeBtn = document.createElement("button");
