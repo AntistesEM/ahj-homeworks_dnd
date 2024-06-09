@@ -24,8 +24,9 @@ export default class Trello {
     });
 
     // Создание нового элемента li при нажатии на кнопку "Add Card"
-    this.container.addEventListener("click", (e) => {
-      if (e.target.classList.contains("add-btn")) {
+    const addBtns = this.container.querySelectorAll(".add-btn");
+    addBtns.forEach((addBtn) => {
+      addBtn.addEventListener("click", (e) => {
         if (e.target.classList.contains("add-btn-card")) {
           const parentSection = e.target.closest("section");
           this.createLiElement(parentSection);
@@ -40,19 +41,64 @@ export default class Trello {
             element.removeAttribute("hidden");
           });
         }
-      } else if (e.target.classList.contains("close-icon")) {
-        this.setHidden();
-        const parentSection = e.target.closest("section");
-        const inputEl = parentSection.querySelector(".input-title");
-        inputEl.value = "";
-      } else if (e.target.classList.contains("close-btn")) {
-        this.setHidden();
-        const parentSection = e.target.closest("li");
-        parentSection.remove();
-      }
+      });
     });
 
+    const closeIcons = this.container.querySelectorAll(".close-icon");
+    closeIcons.forEach((closeIcon) => {
+      closeIcon.addEventListener("click", () => {
+        this.setHidden();
+
+        const parentSection = closeIcon.closest("section");
+        const inputEl = parentSection.querySelector(".input-title");
+
+        inputEl.value = "";
+      });
+    });
+
+    // Перенес этот обработчик в отдельный метод и запускаю его при создании кнопки в элементе li
+    // const closeBtns = this.container.querySelectorAll(".close-btn");
+    // if (closeBtns) {
+    //   closeBtns.forEach((closeBtn) => {
+    //     closeBtn.addEventListener("click", () => {
+    //       this.setHidden();
+    //       const parentSection = closeBtn.closest("li");
+    //       parentSection.remove();
+    //     });
+    //   });
+    // }
+
+    // Первый вариант: Создание нового элемента li при нажатии на кнопку "Add Card"
+    // this.container.addEventListener("click", (e) => {
+    //   if (e.target.classList.contains("add-btn")) {
+    //     if (e.target.classList.contains("add-btn-card")) {
+    //       const parentSection = e.target.closest("section");
+    //       this.createLiElement(parentSection);
+    //       this.setHidden();
+    //     } else {
+    //       this.setHidden();
+    //       e.target.textContent = "Add Card";
+    //       e.target.classList.add("add-btn-card");
+    //       const parentSection = e.target.closest("section");
+    //       const doneHiddens = parentSection.querySelectorAll(".hidden");
+    //       doneHiddens.forEach((element) => {
+    //         element.removeAttribute("hidden");
+    //       });
+    //     }
+    //   } else if (e.target.classList.contains("close-icon")) {
+    //     this.setHidden();
+    //     const parentSection = e.target.closest("section");
+    //     const inputEl = parentSection.querySelector(".input-title");
+    //     inputEl.value = "";
+    //   } else if (e.target.classList.contains("close-btn")) {
+    //     this.setHidden();
+    //     const parentSection = e.target.closest("li");
+    //     parentSection.remove();
+    //   }
+    // });
+
     // Сохранение элементов li при закрытии страницы
+
     window.addEventListener("beforeunload", () => {
       localStorage.clear();
       const cardsLists = document.querySelectorAll("section");
@@ -67,6 +113,14 @@ export default class Trello {
     window.addEventListener("DOMContentLoaded", () => {
       this.dargNdrop();
       // this.dnd();
+    });
+  }
+
+  addEventListenerLiBtn(btnLi) {
+    btnLi.addEventListener("click", () => {
+      this.setHidden();
+      const parentSection = btnLi.closest("li");
+      parentSection.remove();
     });
   }
 
@@ -215,6 +269,7 @@ export default class Trello {
     // Создаем кнопку <button>
     const closeBtn = document.createElement("button");
     closeBtn.classList.add("close-btn");
+    this.addEventListenerLiBtn(closeBtn);
 
     // Добавляем кнопку внутрь элемента <li>
     newCardItem.appendChild(closeBtn);
